@@ -1,5 +1,8 @@
 package ca.ubc.ece.cpen221.mp3.graph;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
@@ -24,9 +27,49 @@ public class Algorithms {
 	 * @param b
 	 * @return
 	 */
+	private static ArrayList<Vertex> visited = new ArrayList<Vertex>();
+	
 	public static int shortestDistance(Graph graph, Vertex a, Vertex b) {
-		// TODO: Implement this method and others
-		return 0;
+		//if a == b distance is 0
+		if(a == b) {
+			return 0;
+		}
+		
+		
+		//find the first downStreamNeighbours
+		List<Vertex> neighbours = graph.getDownstreamNeighbors(a);
+		visited.add(a);
+		int distance = 1;
+		
+		List<Vertex> prevNeighbours = new ArrayList<Vertex>(neighbours);
+		for(Vertex vertex : prevNeighbours) {
+			visited.add(vertex);
+		}
+		while(true) {
+			if(prevNeighbours.contains(b)) {
+				return distance;
+			}
+			
+			List<Vertex> nextNeighbours = new ArrayList<Vertex>();
+			for(Vertex vertex: prevNeighbours) {
+				List<Vertex> temp = new ArrayList<Vertex>();
+				temp = graph.getDownstreamNeighbors(vertex);
+				
+				for(Vertex vert: temp) {
+					if(!visited.contains(vert)) {
+						nextNeighbours.add(vert);
+						visited.add(vert);
+					}
+				}
+			}
+			
+			distance++;
+			prevNeighbours = nextNeighbours;
+			
+			if(prevNeighbours.isEmpty()) {
+				return -1;
+			}
+		}	
 	}
 
 	/**
@@ -86,16 +129,33 @@ public class Algorithms {
 	 * You should write the spec for this method
 	 */
 	 public static List<Vertex> commonUpstreamVertices(Graph graph, Vertex a, Vertex b) {
-		 // TODO: Implement this method
- 		return null; // this should be changed
+		 List<Vertex> commonVertices = new ArrayList<Vertex>();
+		 List<Vertex> aNeighbours = graph.getUpstreamNeighbors(a);
+		 List<Vertex> bNeighbours = graph.getUpstreamNeighbors(b);
+		 
+		 for(Vertex vertex : aNeighbours) {
+			 if(bNeighbours.contains(vertex)) {
+				 commonVertices.add(vertex);
+			 }
+		 }
+		 return commonVertices;
+		 
 	 }
 
 	 /**
  	 * You should write the spec for this method
  	 */
  	 public static List<Vertex> commonDownstreamVertices(Graph graph, Vertex a, Vertex b) {
- 		 // TODO: Implement this method
-  		return null; // this should be changed
+ 		 List<Vertex> commonVertices = new ArrayList<Vertex>();
+		 List<Vertex> aNeighbours = graph.getDownstreamNeighbors(a);
+		 List<Vertex> bNeighbours = graph.getDownstreamNeighbors(b);
+		 
+		 for(Vertex vertex : aNeighbours) {
+			 if(bNeighbours.contains(vertex)) {
+				 commonVertices.add(vertex);
+			 }
+		 }
+		 return commonVertices;
  	 }
 
 }

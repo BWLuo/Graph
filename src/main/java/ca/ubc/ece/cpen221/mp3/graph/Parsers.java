@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
-import java.util.BitSet;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
@@ -33,13 +32,16 @@ public class Parsers {
 		Scanner document = new Scanner(new File(fileName));
 		while(document.hasNextLine()) {
 			String currentLine = document.nextLine();
-			if (currentLine.charAt(0) == '#' || currentLine.charAt(0) == '\n' ) {
+			if (currentLine.charAt(0) == '#' || currentLine.charAt(0) == '\n'||currentLine == "") {
 				continue;
 			}
 			else{
 				String[] words = currentLine.split("\\t");
 				inNodes.add(new Vertex(words[0]));
 				toNodes.add(new Vertex(words[1]));
+				
+				inNodes.add(new Vertex(words[1]));
+				toNodes.add(new Vertex(words[0]));
 			}
 		}
 		document.close();
@@ -70,7 +72,34 @@ public class Parsers {
 	 *             file
 	 */
 	static public Graph parseMarvelDataset(String fileName, int graphRep) throws IOException {
-		// TODO: Implement this method
-		return null;
+		List<Vertex> inNodes = new ArrayList<Vertex>();
+		List<Vertex> toNodes = new ArrayList<Vertex>();
+
+		Scanner document = new Scanner(new File(fileName));
+		while(document.hasNextLine()) {
+			String currentLine = document.nextLine();
+			if (currentLine.charAt(0) == '#' || currentLine.charAt(0) == '\n'||currentLine == "" ) {
+				continue;
+			}
+			else{
+				String[] words = currentLine.split("\\t");
+				inNodes.add(new Vertex(words[0]));
+				toNodes.add(new Vertex(words[1]));
+				
+				inNodes.add(new Vertex(words[1]));
+				toNodes.add(new Vertex(words[0]));
+			}
+		}
+		document.close();
+		
+		if(graphRep == 1) {
+			return new AdjacencyListGraph (inNodes,toNodes);
+		}
+		if(graphRep == 2) {
+			return new AdjacencyMatrixGraph(inNodes,toNodes);
+		}
+		else {
+			throw new IOException();
+		}
 	}
 }
