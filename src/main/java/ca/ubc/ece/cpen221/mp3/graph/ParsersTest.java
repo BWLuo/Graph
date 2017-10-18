@@ -10,9 +10,13 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
+
+
 public class ParsersTest {
 
-	@Test
+
+	//Test for AdjacencyListGraph
 	public void test1() throws IOException {
 		//testing initialization
 		String filename = "datasets/enronStyled.txt";
@@ -73,5 +77,4 @@ public class ParsersTest {
 		
 		assertEquals(oneUp,test.getUpstreamNeighbors(one));
 	}
-
 }

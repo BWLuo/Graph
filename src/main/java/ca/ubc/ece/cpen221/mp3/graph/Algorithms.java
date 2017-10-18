@@ -2,6 +2,8 @@ package ca.ubc.ece.cpen221.mp3.graph;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
@@ -27,13 +29,13 @@ public class Algorithms {
 	 * @param b
 	 * @return
 	 */
-	private static ArrayList<Vertex> visited = new ArrayList<Vertex>();
 	
 	public static int shortestDistance(Graph graph, Vertex a, Vertex b) {
 		//if a == b distance is 0
 		if(a == b) {
 			return 0;
 		}
+		ArrayList<Vertex> visited = new ArrayList<Vertex>();
 		
 		
 		//find the first downStreamNeighbours
@@ -85,10 +87,48 @@ public class Algorithms {
 	 * @param
 	 * @return
 	 */
+	private static List<Vertex> visited = new ArrayList<Vertex>();
+	
 	public static Set<List<Vertex>> depthFirstSearch(Graph graph) {
-		// TODO: Implement this method
-		return null; // this should be changed
+		Set<List<Vertex>> setOfLists = new HashSet<List<Vertex>>();
+		List<Vertex> vertices = graph.getVertices();
+		
+		for(Vertex vertex : vertices) {
+			
+			System.out.println("starting at" + vertex);
+			
+			visited = new ArrayList<Vertex>();
+			dFS(graph, visited, vertex);
+			setOfLists.add(visited);
+		}
+		return setOfLists;
 
+	}
+	
+	private static void dFS(Graph graph, List<Vertex> visited, Vertex currentVertex) {
+		visited.add(currentVertex);
+		
+		List<Vertex> goVisit = new ArrayList<Vertex>();
+		goVisit = graph.getDownstreamNeighbors(currentVertex);
+		
+		List<Vertex> toVisit = new ArrayList<Vertex>();
+		for(Vertex vertex : goVisit) {
+			if(!visited.contains(vertex)) {
+				toVisit.add(vertex);
+			}
+		}
+		//terminating step
+		if (toVisit.isEmpty()) {
+			return;
+		}
+		for(Vertex vertex : toVisit) {
+			if(!visited.contains(vertex)) {
+				System.out.println("went to" + vertex);
+			
+				dFS(graph, visited,vertex);
+			}
+		}
+		return;
 	}
 
 	/**
