@@ -32,7 +32,7 @@ public class Parsers {
 		Scanner document = new Scanner(new File(fileName));
 		while(document.hasNextLine()) {
 			String currentLine = document.nextLine();
-			if (currentLine.charAt(0) == '#' || currentLine.charAt(0) == '\n'||currentLine == "") {
+			if (currentLine.startsWith("#") || currentLine.startsWith("\\n")||currentLine == "") {
 				continue;
 			}
 			else{

@@ -9,7 +9,7 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 public class AdjacencyListGraph implements Graph {	
 	//HashMap to store the Graph Representation
-	private HashMap<Vertex,ArrayList<Vertex>> graphRep;
+	private HashMap<Vertex,ArrayList<Vertex>> graphRep = new HashMap<Vertex,ArrayList<Vertex>> ();
 	
 	
 	//constructor	
@@ -18,6 +18,7 @@ public class AdjacencyListGraph implements Graph {
 		for(int i = 0 ; i<inNodes.size() ; i++) {
 			Vertex fromVertex = inNodes.get(i);
 			Vertex toVertex = toNodes.get(i);
+			
 			if(!graphRep.containsKey(fromVertex)) {
 				ArrayList<Vertex> newArrayList = new ArrayList<Vertex>();
 				newArrayList.add(toVertex);
@@ -35,7 +36,7 @@ public class AdjacencyListGraph implements Graph {
 	 * Precondition: v is not already a vertex in the graph
 	 */
 	public void addVertex(Vertex v) {
-		graphRep.put(v,null);
+		graphRep.put(v,new ArrayList<Vertex>());
 		
 	}
 
@@ -69,7 +70,13 @@ public class AdjacencyListGraph implements Graph {
 	 * iff v has no downstream neighbors.
 	 */
 	public List<Vertex> getDownstreamNeighbors(Vertex v){
-		return graphRep.get(v);
+		List<Vertex> downNeighbors= new ArrayList<Vertex> ();
+		for(Vertex vertex: graphRep.get(v)) {
+			if(!downNeighbors.contains(vertex)) {
+				downNeighbors.add(vertex);
+			}
+		}
+		return downNeighbors;
 	}
 
 	/**
