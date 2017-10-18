@@ -28,6 +28,9 @@ public class ParsersTest {
 		assertTrue(test.edgeExists(three, four));
 		assertTrue(test.edgeExists(three, five));
 		
+		Graph test2 = new AdjacencyListGraph();
+		assertEquals(new ArrayList<Vertex>(),test2.getVertices());
+		
 		//testing edgeExists
 		assertFalse(test.edgeExists(two,five));
 		

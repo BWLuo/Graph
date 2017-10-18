@@ -10,9 +10,12 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 public class AdjacencyListGraph implements Graph {	
 	//HashMap to store the Graph Representation
 	private HashMap<Vertex,ArrayList<Vertex>> graphRep = new HashMap<Vertex,ArrayList<Vertex>> ();
-	
+	private List<Vertex> vertices = new ArrayList<Vertex>();
 	
 	//constructor	
+	public AdjacencyListGraph() {
+		
+	}
 	public AdjacencyListGraph(List<Vertex> inNodes, List<Vertex> toNodes) {
 		
 		for(int i = 0 ; i<inNodes.size() ; i++) {
@@ -28,6 +31,9 @@ public class AdjacencyListGraph implements Graph {
 				graphRep.get(fromVertex).add(toVertex);
 			}
 		}
+		for(Vertex vertex : graphRep.keySet()) {
+			vertices.add(vertex);
+		}
 	}
 	
 	/**
@@ -37,6 +43,7 @@ public class AdjacencyListGraph implements Graph {
 	 */
 	public void addVertex(Vertex v) {
 		graphRep.put(v,new ArrayList<Vertex>());
+		vertices.add(v);
 		
 	}
 
@@ -106,10 +113,6 @@ public class AdjacencyListGraph implements Graph {
 	 * method should return a list of size 0 iff the graph has no vertices.
 	 */
 	public List<Vertex> getVertices(){
-		List<Vertex> vertices = new ArrayList<Vertex>();
-		for(Vertex vertex : graphRep.keySet()) {
-			vertices.add(vertex);
-		}
 		return vertices;
 	}
 }
