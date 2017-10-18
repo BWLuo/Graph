@@ -94,9 +94,6 @@ public class Algorithms {
 		List<Vertex> vertices = graph.getVertices();
 		
 		for(Vertex vertex : vertices) {
-			
-			System.out.println("starting at" + vertex);
-			
 			visited = new ArrayList<Vertex>();
 			dFS(graph, visited, vertex);
 			setOfLists.add(visited);
@@ -122,9 +119,7 @@ public class Algorithms {
 			return;
 		}
 		for(Vertex vertex : toVisit) {
-			if(!visited.contains(vertex)) {
-				System.out.println("went to" + vertex);
-			
+			if(!visited.contains(vertex)) {			
 				dFS(graph, visited,vertex);
 			}
 		}
