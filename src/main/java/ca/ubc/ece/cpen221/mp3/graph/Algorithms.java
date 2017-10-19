@@ -4,11 +4,17 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Queue;
+import java.util.ArrayDeque;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 public class Algorithms {
+
+	//Shared
+	private static List<Vertex> visited = new ArrayList<Vertex>();
+	private static int graphDiameter = 0;
 
 	/**
 	 * *********************** Algorithms ****************************
@@ -35,7 +41,7 @@ public class Algorithms {
 		if(a == b) {
 			return 0;
 		}
-		ArrayList<Vertex> visited = new ArrayList<Vertex>();
+		visited = new ArrayList<Vertex>();
 		
 		
 		//find the first downStreamNeighbours
@@ -86,9 +92,7 @@ public class Algorithms {
 	 *
 	 * @param
 	 * @return
-	 */
-	private static List<Vertex> visited = new ArrayList<Vertex>();
-	
+	 */	
 	public static Set<List<Vertex>> depthFirstSearch(Graph graph) {
 		Set<List<Vertex>> setOfLists = new HashSet<List<Vertex>>();
 		List<Vertex> vertices = graph.getVertices();
@@ -101,6 +105,7 @@ public class Algorithms {
 		return setOfLists;
 
 	}
+	//Helper function to do recursive call for depthFirstSearch
 	
 	private static void dFS(Graph graph, List<Vertex> visited, Vertex currentVertex) {
 		visited.add(currentVertex);
@@ -140,8 +145,31 @@ public class Algorithms {
 	 * @return
 	 */
 	public static Set<List<Vertex>> breadthFirstSearch(Graph graph) {
-		// TODO: Implement this method
-		return null; // this should be changed
+		Set<List<Vertex>> setOfLists = new HashSet<List<Vertex>> ();
+		List<Vertex> vertices = graph.getVertices();
+		for (Vertex vertex : vertices) {
+						
+			visited = new ArrayList<Vertex>();
+			Queue<Vertex> queue = new ArrayDeque<Vertex>();
+			queue.add(vertex);
+			visited.add(vertex);
+
+			while(!queue.isEmpty()) {
+				
+				Vertex currentVertex = queue.remove();				
+				
+				List<Vertex> neighbours = graph.getDownstreamNeighbors(currentVertex);
+				for(Vertex toVisit : neighbours) {
+					if(!visited.contains(toVisit)) {
+						queue.add(toVisit);
+						visited.add(toVisit);
+					}
+				}
+				
+			}
+			setOfLists.add(visited);
+		}
+		return setOfLists;
 	}
 
 	/**
@@ -149,33 +177,78 @@ public class Algorithms {
 	 */
 	 public static Vertex center(Graph graph) {
 		 // TODO: Implement this method
-		 return null; // this should be changed
+		 
+		 List<Vertex> vertices = graph.getVertices();
+
+		 int smallestEccentricity = -1;
+		 Vertex center = vertices.get(0);
+
+		 for(Vertex vertex : vertices) {
+			 int distance = findEccentricity(graph,vertex);
+			 if(distance<smallestEccentricity) {
+				 smallestEccentricity = distance;
+				 center = vertex;
+			 }
+			 if(smallestEccentricity == -1 ) {
+				 smallestEccentricity = distance;
+				 center = vertex;
+			 }
+		 }
+		 return center;
+	 }
+	 
+	 private static int findEccentricity (Graph graph, Vertex vertex) {
+		 visited = new ArrayList<Vertex>();
+		 
+		 Vertex furthest = vertex;
+		 Queue<Vertex> queue = new ArrayDeque<Vertex>();
+		 queue.add(vertex);
+		 visited.add(vertex);
+		 
+		 while(!queue.isEmpty()) {
+			 
+			Vertex currentVertex = queue.remove();				
+			List<Vertex> neighbours = graph.getDownstreamNeighbors(currentVertex); 
+			
+			for(Vertex toVisit : neighbours) {
+				if(!visited.contains(toVisit)) {
+					queue.add(toVisit);
+					visited.add(toVisit);
+				}
+			}
+			furthest = currentVertex;
+		 }		 
+		 return shortestDistance(graph,vertex,furthest);
 	 }
 
 	 /**
 	  * You should write the spec for this method
 		*/
-		public static int diameter(Graph graph) {
-			// TODO: Implement this method
-			return -1; // this should be changed
-		}
+		public static int graphDiameter(Graph graph) {
+			/*// TODO: Implement this method
+			graphDiameter = 0;
+			List<Vertex> vertices = graph.getVertices();
 
-	/**
-	 * You should write the spec for this method
-	 */
-	 public static List<Vertex> commonUpstreamVertices(Graph graph, Vertex a, Vertex b) {
-		 List<Vertex> commonVertices = new ArrayList<Vertex>();
-		 List<Vertex> aNeighbours = graph.getUpstreamNeighbors(a);
-		 List<Vertex> bNeighbours = graph.getUpstreamNeighbors(b);
-		 
-		 for(Vertex vertex : aNeighbours) {
-			 if(bNeighbours.contains(vertex)) {
-				 commonVertices.add(vertex);
-			 }
-		 }
-		 return commonVertices;
-		 
-	 }
+			for (int i = 0; i < (vertices.size() - 1) ; i++) {
+				for(int j = 1; (j + i) < vertices.size(); j++) {
+					
+					int distance = Algorithms.shortestDistance(graph, vertices.get(i), vertices.get(j));
+					if(distance > graphDiameter) {
+						graphDiameter = distance;
+					}
+				}
+			}
+			return graphDiameter;*/
+			graphDiameter = 0;
+			List<Vertex> vertices = graph.getVertices();
+			for(Vertex vertex : vertices) {
+				int length = findEccentricity(graph,vertex);
+				if (length>graphDiameter) {
+					graphDiameter = length;
+				}
+			}
+			return graphDiameter;
+		}
 
 	 /**
  	 * You should write the spec for this method

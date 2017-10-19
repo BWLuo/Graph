@@ -46,6 +46,7 @@ public class AdjacencyMatrixGraph implements Graph {
 	 * Precondition: v is not already a vertex in the graph
 	 */
 	public void addVertex(Vertex v) {
+		vertices.add(v);
 		vertValues.put(v,nextMapIndex);
 		nextMapIndex++;
 		matrix.add(new BitSet());
@@ -110,7 +111,7 @@ public class AdjacencyMatrixGraph implements Graph {
 		int index = vertValues.get(v);
 		
 		for(int i = 0; i < matrix.size(); i++) {
-			if(matrix.get(0).get(index)) {
+			if(matrix.get(i).get(index)) {
 				upNeighbours.add(vertices.get(i));
 			}
 		}
