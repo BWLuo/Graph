@@ -23,10 +23,11 @@ public class AlgorithmsTest {
 		
 		String filename = "datasets/enron.txt";
 		Graph test = Parsers.parseEnronDataset(filename,1);
-		System.out.println(Algorithms.center(test));
-		
+		//for(Vertex vertex: test.getVertices()) {
+			Algorithms.findEccentricity(test, new Vertex("10000"));
+		//}
 	}
-	@Test
+	
 	public void test2() throws IOException {
 		
 		String filename = "datasets/enron.txt";

@@ -8,14 +8,12 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 
 public class AdjacencyListGraph implements Graph {	
-	//HashMap to store the Graph Representation
 	private HashMap<Vertex,ArrayList<Vertex>> graphRep = new HashMap<Vertex,ArrayList<Vertex>> ();
 	private List<Vertex> vertices = new ArrayList<Vertex>();
 	
-	//constructor	
 	public AdjacencyListGraph() {
-		
 	}
+	
 	public AdjacencyListGraph(List<Vertex> inNodes, List<Vertex> toNodes) {
 		
 		for(int i = 0 ; i<inNodes.size() ; i++) {
@@ -23,17 +21,18 @@ public class AdjacencyListGraph implements Graph {
 			Vertex toVertex = toNodes.get(i);
 			
 			if(!graphRep.containsKey(fromVertex)) {
-				ArrayList<Vertex> newArrayList = new ArrayList<Vertex>();
-				newArrayList.add(toVertex);
-				graphRep.put(fromVertex, newArrayList);
+				graphRep.put(fromVertex, new ArrayList<Vertex>());
+				vertices.add(fromVertex);
 			}
-			else {
+			if(!graphRep.containsKey(toVertex)) {
+				graphRep.put(toVertex, new ArrayList<Vertex>());
+				vertices.add(toVertex);
+			}
+			if(!graphRep.get(fromVertex).contains(toVertex)) {
 				graphRep.get(fromVertex).add(toVertex);
 			}
 		}
-		for(Vertex vertex : graphRep.keySet()) {
-			vertices.add(vertex);
-		}
+		
 	}
 	
 	/**
@@ -77,13 +76,7 @@ public class AdjacencyListGraph implements Graph {
 	 * iff v has no downstream neighbors.
 	 */
 	public List<Vertex> getDownstreamNeighbors(Vertex v){
-		List<Vertex> downNeighbors= new ArrayList<Vertex> ();
-		for(Vertex vertex: graphRep.get(v)) {
-			if(!downNeighbors.contains(vertex)) {
-				downNeighbors.add(vertex);
-			}
-		}
-		return downNeighbors;
+		return graphRep.get(v);
 	}
 
 	/**
@@ -113,6 +106,6 @@ public class AdjacencyListGraph implements Graph {
 	 * method should return a list of size 0 iff the graph has no vertices.
 	 */
 	public List<Vertex> getVertices(){
-		return vertices;
+		return new ArrayList<Vertex>(vertices);
 	}
 }

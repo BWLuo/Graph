@@ -197,7 +197,7 @@ public class Algorithms {
 		 return center;
 	 }
 	 
-	 private static int findEccentricity (Graph graph, Vertex vertex) {
+	 public static Vertex findEccentricity (Graph graph, Vertex vertex) {
 		 visited = new ArrayList<Vertex>();
 		 
 		 Vertex furthest = vertex;
@@ -218,7 +218,7 @@ public class Algorithms {
 			}
 			furthest = currentVertex;
 		 }		 
-		 return shortestDistance(graph,vertex,furthest);
+		 return furthest;
 	 }
 
 	 /**
