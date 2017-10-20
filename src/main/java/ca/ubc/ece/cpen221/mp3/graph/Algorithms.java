@@ -2,10 +2,12 @@ package ca.ubc.ece.cpen221.mp3.graph;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
@@ -197,48 +199,50 @@ public class Algorithms {
 		 return center;
 	 }
 	 
-	 public static Vertex findEccentricity (Graph graph, Vertex vertex) {
-		 visited = new ArrayList<Vertex>();
+	 public static int findEccentricity (Graph graph, Vertex vertex) {
+		 List<Vertex> vertices = graph.getVertices();
+		 //creating marker table to indicate visited vertices
+		 HashMap<Vertex,Integer> indexValues = new HashMap<Vertex,Integer> ();
+		 Boolean[] checker = new Boolean[vertices.size()];
+		 int index = 0;
+		 Arrays.fill(checker, false);
+		 for (Vertex vert : vertices) {
+			indexValues.put(vert, index);
+			index++;
+		 }
 		 
-		 Vertex furthest = vertex;
-		 Queue<Vertex> queue = new ArrayDeque<Vertex>();
-		 queue.add(vertex);
-		 visited.add(vertex);
+		 int distance = 0;
+		 //finding farthest vertex
 		 
-		 while(!queue.isEmpty()) {
-			 
-			Vertex currentVertex = queue.remove();				
-			List<Vertex> neighbours = graph.getDownstreamNeighbors(currentVertex); 
-			
-			for(Vertex toVisit : neighbours) {
-				if(!visited.contains(toVisit)) {
-					queue.add(toVisit);
-					visited.add(toVisit);
-				}
-			}
-			furthest = currentVertex;
-		 }		 
-		 return furthest;
+		 //starting BFS from initial vertex
+		 checker[indexValues.get(vertex)] = true;
+		 List<Vertex> neighbours = graph.getDownstreamNeighbors(vertex); 
+		 while(!neighbours.isEmpty()) {
+			 List<Vertex> nextNeighbours = new ArrayList<Vertex>();
+			 for(Vertex points: neighbours) {
+				 List<Vertex> tempNeighbours = graph.getDownstreamNeighbors(points);
+				 for(Vertex point: tempNeighbours) {
+					 int checkerIndex = indexValues.get(point);
+					 if(!checker[checkerIndex]) {
+						 nextNeighbours.add(point);
+						 checker[checkerIndex] = true;
+						 
+					 }
+
+				 }
+			 }
+			 neighbours=nextNeighbours;
+			 distance ++;
+		 }
+		 return distance;
 	 }
 
 	 /**
 	  * You should write the spec for this method
 		*/
 		public static int graphDiameter(Graph graph) {
-			/*// TODO: Implement this method
-			graphDiameter = 0;
-			List<Vertex> vertices = graph.getVertices();
-
-			for (int i = 0; i < (vertices.size() - 1) ; i++) {
-				for(int j = 1; (j + i) < vertices.size(); j++) {
-					
-					int distance = Algorithms.shortestDistance(graph, vertices.get(i), vertices.get(j));
-					if(distance > graphDiameter) {
-						graphDiameter = distance;
-					}
-				}
-			}
-			return graphDiameter;*/
+			// TODO: Implement this method
+			
 			graphDiameter = 0;
 			List<Vertex> vertices = graph.getVertices();
 			for(Vertex vertex : vertices) {
