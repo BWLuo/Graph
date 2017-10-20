@@ -265,5 +265,18 @@ public class Algorithms {
 		 }
 		 return commonVertices;
  	 }
+ 	 
+ 	 public static List<Vertex> commonUpstreamVertices(Graph graph, Vertex a, Vertex b) {
+ 		 List<Vertex> commonVertices = new ArrayList<Vertex>();
+		 List<Vertex> aNeighbours = graph.getUpstreamNeighbors(a);
+		 List<Vertex> bNeighbours = graph.getUpstreamNeighbors(b);
+		 
+		 for(Vertex vertex : aNeighbours) {
+			 if(bNeighbours.contains(vertex)) {
+				 commonVertices.add(vertex);
+			 }
+		 }
+		 return commonVertices;
+ 	 }
 
 }
