@@ -1,4 +1,5 @@
 package ca.ubc.ece.cpen221.mp3.graph;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,44 +7,45 @@ import java.util.HashMap;
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
-
-public class AdjacencyListGraph implements Graph {	
-	private HashMap<Vertex,ArrayList<Vertex>> graphRep = new HashMap<Vertex,ArrayList<Vertex>> ();
+public class AdjacencyListGraph implements Graph {
+	private HashMap<Vertex, ArrayList<Vertex>> graphRep = new HashMap<Vertex, ArrayList<Vertex>>();
 	private List<Vertex> vertices = new ArrayList<Vertex>();
-	
+
 	public AdjacencyListGraph() {
 	}
-	
+
 	public AdjacencyListGraph(List<Vertex> inNodes, List<Vertex> toNodes) {
-		
-		for(int i = 0 ; i<inNodes.size() ; i++) {
+
+		for (int i = 0; i < inNodes.size(); i++) {
 			Vertex fromVertex = inNodes.get(i);
 			Vertex toVertex = toNodes.get(i);
-			
-			if(!graphRep.containsKey(fromVertex)) {
+
+			if (!graphRep.containsKey(fromVertex)) {
 				graphRep.put(fromVertex, new ArrayList<Vertex>());
 				vertices.add(fromVertex);
 			}
-			if(!graphRep.containsKey(toVertex)) {
+			if (!graphRep.containsKey(toVertex)) {
 				graphRep.put(toVertex, new ArrayList<Vertex>());
 				vertices.add(toVertex);
 			}
-			if(!graphRep.get(fromVertex).contains(toVertex)) {
+			if (!graphRep.get(fromVertex).contains(toVertex)) {
 				graphRep.get(fromVertex).add(toVertex);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Adds a vertex to the graph.
 	 *
 	 * Precondition: v is not already a vertex in the graph
 	 */
 	public void addVertex(Vertex v) {
-		graphRep.put(v,new ArrayList<Vertex>());
-		vertices.add(v);
-		
+		if (!vertices.contains(v)) {
+			graphRep.put(v, new ArrayList<Vertex>());
+			vertices.add(v);
+		}
+
 	}
 
 	/**
@@ -58,8 +60,8 @@ public class AdjacencyListGraph implements Graph {
 	/**
 	 * Check if there is an edge from v1 to v2.
 	 *
-	 * Precondition: v1 and v2 are vertices in the graph Postcondition: return
-	 * true iff an edge from v1 connects to v2
+	 * Precondition: v1 and v2 are vertices in the graph Postcondition: return true
+	 * iff an edge from v1 connects to v2
 	 */
 	public boolean edgeExists(Vertex v1, Vertex v2) {
 		return graphRep.get(v1).contains(v2);
@@ -70,12 +72,12 @@ public class AdjacencyListGraph implements Graph {
 	 *
 	 * Precondition: v is a vertex in the graph
 	 * 
-	 * Postcondition: returns a list containing each vertex w such that there is
-	 * an edge from v to w. The size of the list must be as small as possible
-	 * (No trailing null elements). This method should return a list of size 0
-	 * iff v has no downstream neighbors.
+	 * Postcondition: returns a list containing each vertex w such that there is an
+	 * edge from v to w. The size of the list must be as small as possible (No
+	 * trailing null elements). This method should return a list of size 0 iff v has
+	 * no downstream neighbors.
 	 */
-	public List<Vertex> getDownstreamNeighbors(Vertex v){
+	public List<Vertex> getDownstreamNeighbors(Vertex v) {
 		return graphRep.get(v);
 	}
 
@@ -84,15 +86,15 @@ public class AdjacencyListGraph implements Graph {
 	 *
 	 * Precondition: v is a vertex in the graph
 	 * 
-	 * Postcondition: returns a list containing each vertex u such that there is
-	 * an edge from u to v. The size of the list must be as small as possible
-	 * (No trailing null elements). This method should return a list of size 0
-	 * iff v has no upstream neighbors.
+	 * Postcondition: returns a list containing each vertex u such that there is an
+	 * edge from u to v. The size of the list must be as small as possible (No
+	 * trailing null elements). This method should return a list of size 0 iff v has
+	 * no upstream neighbors.
 	 */
-	public List<Vertex> getUpstreamNeighbors(Vertex v){
+	public List<Vertex> getUpstreamNeighbors(Vertex v) {
 		List<Vertex> upstreamNeighbours = new ArrayList<Vertex>();
 		for (Vertex vertex : graphRep.keySet()) {
-			if(graphRep.get(vertex).contains(v)) {
+			if (graphRep.get(vertex).contains(v)) {
 				upstreamNeighbours.add(vertex);
 			}
 		}
@@ -105,7 +107,7 @@ public class AdjacencyListGraph implements Graph {
 	 * Postcondition: returns a list containing all vertices in the graph. This
 	 * method should return a list of size 0 iff the graph has no vertices.
 	 */
-	public List<Vertex> getVertices(){
+	public List<Vertex> getVertices() {
 		return new ArrayList<Vertex>(vertices);
 	}
 }

@@ -139,4 +139,59 @@ public class ParsersTest {
 		
 		assertEquals(oneUp,test.getUpstreamNeighbors(one));
 	}
+	
+	@Test
+	public void test3() throws IOException {
+		//testing initialization
+		String filename = "datasets/marvelStyled.txt";
+		Graph test = Parsers.parseMarvelDataset(filename,1);
+		Vertex one = new Vertex("1");
+		Vertex two = new Vertex("2");
+		Vertex three = new Vertex("3");
+		Vertex four = new Vertex("4");
+		Vertex five = new Vertex("5");
+
+		assertTrue(test.edgeExists(one, two));
+		assertTrue(test.edgeExists(two, one));
+		assertTrue(test.edgeExists(three, four));
+		assertTrue(!test.edgeExists(three, five));
+		
+		assertEquals(new ArrayList<Vertex>(),test.getUpstreamNeighbors(five));
+		assertEquals(new ArrayList<Vertex>(),test.getDownstreamNeighbors(five));
+
+
+		
+	}
+	
+	@Test
+	public void test4() throws IOException {
+		//testing initialization
+		String filename = "datasets/marvelStyled.txt";
+		Graph test = Parsers.parseMarvelDataset(filename,2);
+		Vertex one = new Vertex("1");
+		Vertex two = new Vertex("2");
+		Vertex three = new Vertex("3");
+		Vertex four = new Vertex("4");
+		Vertex five = new Vertex("5");
+
+		assertTrue(test.edgeExists(one, two));
+		assertTrue(test.edgeExists(two, one));
+		assertTrue(test.edgeExists(three, four));
+		assertTrue(!test.edgeExists(three, five));
+		
+		assertEquals(new ArrayList<Vertex>(),test.getUpstreamNeighbors(five));
+		assertEquals(new ArrayList<Vertex>(),test.getDownstreamNeighbors(five));
+	}
+	
+	
+	@Test (expected = IOException.class)
+	public void test5() throws IOException {
+		String filename = "datasets/marvelStyled.txt";
+		Graph test = Parsers.parseMarvelDataset(filename,3);
+	}
+	@Test (expected = IOException.class)
+	public void test6() throws IOException {
+		String filename = "datasets/marvelStyled.txt";
+		Graph test = Parsers.parseEnronDataset(filename,3);
+	}
 }

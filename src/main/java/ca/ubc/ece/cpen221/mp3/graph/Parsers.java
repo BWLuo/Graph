@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
+import java.util.HashMap;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
@@ -74,6 +75,9 @@ public class Parsers {
 	static public Graph parseMarvelDataset(String fileName, int graphRep) throws IOException {
 		List<Vertex> inNodes = new ArrayList<Vertex>();
 		List<Vertex> toNodes = new ArrayList<Vertex>();
+		List<Vertex> issolated = new ArrayList<Vertex>();
+		
+		HashMap<String,ArrayList<Vertex>> groups = new HashMap<String,ArrayList<Vertex>>();
 
 		Scanner document = new Scanner(new File(fileName));
 		while(document.hasNextLine()) {
@@ -83,20 +87,44 @@ public class Parsers {
 			}
 			else{
 				String[] words = currentLine.split("\\t");
-				inNodes.add(new Vertex(words[0]));
-				toNodes.add(new Vertex(words[1]));
-				
-				inNodes.add(new Vertex(words[1]));
-				toNodes.add(new Vertex(words[0]));
+				if(!groups.containsKey(words[1])) {
+					groups.put(words[1], new ArrayList<Vertex>());
+				}
+				groups.get(words[1]).add(new Vertex (words[0]));
 			}
 		}
 		document.close();
 		
+		for(String vertex: groups.keySet()) {
+			ArrayList<Vertex> temp = groups.get(vertex);
+			if(temp.size()==1) {
+				issolated.add(temp.get(0));
+			}
+			for(int i = 0; i < temp.size() -1 ; i++) {
+				for (int j = 1; i+j<temp.size(); j++) {
+					inNodes.add(temp.get(i));
+					toNodes.add(temp.get(i+j));
+					
+					inNodes.add(temp.get(i+j));
+					toNodes.add(temp.get(i));
+				}
+			}
+		}
+
 		if(graphRep == 1) {
-			return new AdjacencyListGraph (inNodes,toNodes);
+			Graph graph = new AdjacencyListGraph (inNodes,toNodes);
+			for(Vertex vert : issolated) {
+				graph.addVertex(vert);
+			}
+			return graph;
+			
 		}
 		if(graphRep == 2) {
-			return new AdjacencyMatrixGraph(inNodes,toNodes);
+			Graph graph = new AdjacencyMatrixGraph(inNodes,toNodes);
+			for(Vertex vert: issolated) {
+				graph.addVertex(vert);
+			}
+			return graph;
 		}
 		else {
 			throw new IOException();
