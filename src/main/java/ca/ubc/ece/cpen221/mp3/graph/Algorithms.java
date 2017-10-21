@@ -14,92 +14,88 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 public class Algorithms {
 
-	//Shared
 	private static List<Vertex> visited = new ArrayList<Vertex>();
 	private static int graphDiameter = 0;
 
 	/**
-	 * *********************** Algorithms ****************************
-	 *
-	 * Please see the README for this machine problem for a more detailed
-	 * specification of the behavior of each method that one should
-	 * implement.
-	 */
-
-	/**
-	 * This is provided as an example to indicate that this method and
-	 * other methods should be implemented here.
-	 *
-	 * You should write the specs for this and all other methods.
+	 * find the distance between two vertices in a graph
 	 *
 	 * @param graph
+	 *            a graph with at least one vertex
 	 * @param a
+	 *            vertex in the graph
 	 * @param b
-	 * @return
+	 *            vertex in the graph
+	 * @return the distance between a and b in the graph. returns -1 if a and b are
+	 *         not connected and 0 if a and b are the same vertex
 	 */
-	
+
 	public static int shortestDistance(Graph graph, Vertex a, Vertex b) {
-		//if a == b distance is 0
-		if(a == b) {
+		// finding distance between a vertex and itself
+		if (a.equals(b)) {
 			return 0;
 		}
-		visited = new ArrayList<Vertex>();
-		
-		
-		//find the first downStreamNeighbours
-		List<Vertex> neighbours = graph.getDownstreamNeighbors(a);
-		visited.add(a);
-		int distance = 1;
-		
-		List<Vertex> prevNeighbours = new ArrayList<Vertex>(neighbours);
-		for(Vertex vertex : prevNeighbours) {
-			visited.add(vertex);
+
+		List<Vertex> vertices = graph.getVertices();
+
+		// creating marker table to indicate visited vertices
+		HashMap<Vertex, Integer> indexValues = new HashMap<Vertex, Integer>();
+		Boolean[] checker = new Boolean[vertices.size()];
+		int index = 0;
+		Arrays.fill(checker, false);
+		for (Vertex vert : vertices) {
+			indexValues.put(vert, index);
+			index++;
 		}
-		while(true) {
-			if(prevNeighbours.contains(b)) {
-				return distance;
-			}
-			
+
+		// setting initial condition if cannot reach vertex b from a
+		int distance = 0;
+
+		// starting BFS from first vertex
+		checker[indexValues.get(a)] = true;
+		List<Vertex> neighbours = graph.getDownstreamNeighbors(a);
+		while (!neighbours.contains(b) && !neighbours.isEmpty()) {
 			List<Vertex> nextNeighbours = new ArrayList<Vertex>();
-			for(Vertex vertex: prevNeighbours) {
-				List<Vertex> temp = new ArrayList<Vertex>();
-				temp = graph.getDownstreamNeighbors(vertex);
-				
-				for(Vertex vert: temp) {
-					if(!visited.contains(vert)) {
-						nextNeighbours.add(vert);
-						visited.add(vert);
+			for (Vertex points : neighbours) {
+				List<Vertex> tempNeighbours = graph.getDownstreamNeighbors(points);
+				for (Vertex point : tempNeighbours) {
+					int checkerIndex = indexValues.get(point);
+					if (!checker[checkerIndex]) {
+						nextNeighbours.add(point);
+						checker[checkerIndex] = true;
+
 					}
+
 				}
 			}
-			
+			neighbours = nextNeighbours;
 			distance++;
-			prevNeighbours = nextNeighbours;
-			
-			if(prevNeighbours.isEmpty()) {
-				return -1;
-			}
-		}	
+		}
+		if (distance == 0) {
+			return distance;
+		}
+		return distance;
 	}
 
 	/**
-	 * Perform a complete depth first search of the given
-	 * graph. Start with the search at each vertex of the
-	 * graph and create a list of the vertices visited.
-	 * Return a set where each element of the set is a list
-	 * of elements seen by starting a DFS at a specific
-	 * vertex of the graph (the number of elements in the
-	 * returned set should correspond to the number of graph
-	 * vertices).
+	 * Perform a complete depth first search of the given graph. Start with the
+	 * search at each vertex of the graph and create a list of the vertices visited.
+	 * Return a set where each element of the set is a list of elements seen by
+	 * starting a DFS at a specific vertex of the graph (the number of elements in
+	 * the returned set should correspond to the number of graph vertices).
 	 *
-	 * @param
-	 * @return
-	 */	
+	 * @param a
+	 *            graph with at least one vertex
+	 * @return a set of lists where every element of the set is a list of vertices
+	 *         in the order that the DFS visited each vertex connected to the vertex
+	 *         where the search was started
+	 */
 	public static Set<List<Vertex>> depthFirstSearch(Graph graph) {
 		Set<List<Vertex>> setOfLists = new HashSet<List<Vertex>>();
 		List<Vertex> vertices = graph.getVertices();
-		
-		for(Vertex vertex : vertices) {
+
+		// Performing a DFS at every vertex in the graph
+		for (Vertex vertex : vertices) {
 			visited = new ArrayList<Vertex>();
 			dFS(graph, visited, vertex);
 			setOfLists.add(visited);
@@ -107,67 +103,80 @@ public class Algorithms {
 		return setOfLists;
 
 	}
-	//Helper function to do recursive call for depthFirstSearch
-	
+
+	/**
+	 * Helper method to continue the recursive call of the DFS
+	 * 
+	 * @param graph
+	 *            graph with at least one point
+	 * @param visited
+	 *            a list that contains vertices that have already been visited by a
+	 *            search
+	 * @param currentVertex
+	 *            the current vertex to continue the DFS
+	 */
 	private static void dFS(Graph graph, List<Vertex> visited, Vertex currentVertex) {
 		visited.add(currentVertex);
-		
+
 		List<Vertex> goVisit = new ArrayList<Vertex>();
 		goVisit = graph.getDownstreamNeighbors(currentVertex);
-		
+
 		List<Vertex> toVisit = new ArrayList<Vertex>();
-		for(Vertex vertex : goVisit) {
-			if(!visited.contains(vertex)) {
+		// check if the vertex to visit has already been visited
+		for (Vertex vertex : goVisit) {
+			if (!visited.contains(vertex)) {
 				toVisit.add(vertex);
 			}
 		}
-		//terminating step
+		// terminating step
 		if (toVisit.isEmpty()) {
 			return;
 		}
-		for(Vertex vertex : toVisit) {
-			if(!visited.contains(vertex)) {			
-				dFS(graph, visited,vertex);
+		// recursively call the method again on the unvisited vertices
+		for (Vertex vertex : toVisit) {
+			if (!visited.contains(vertex)) {
+				dFS(graph, visited, vertex);
 			}
 		}
 		return;
 	}
 
 	/**
-	 * Perform a complete breadth first search of the given
-	 * graph. Start with the search at each vertex of the
-	 * graph and create a list of the vertices visited.
-	 * Return a set where each element of the set is a list
-	 * of elements seen by starting a BFS at a specific
-	 * vertex of the graph (the number of elements in the
-	 * returned set should correspond to the number of graph
-	 * vertices).
+	 * Perform a complete breadth first search of the given graph. Start with the
+	 * search at each vertex of the graph and create a list of the vertices visited.
+	 * Return a set where each element of the set is a list of elements seen by
+	 * starting a BFS at a specific vertex of the graph (the number of elements in
+	 * the returned set should correspond to the number of graph vertices).
 	 *
-	 * @param
-	 * @return
+	 * @param a
+	 *            graph with at least one vertex
+	 * @return a set of lists where every element of the set is a list of vertices
+	 *         in the order that the BFS visited each vertex connected to the vertex
+	 *         where the search was started
 	 */
 	public static Set<List<Vertex>> breadthFirstSearch(Graph graph) {
-		Set<List<Vertex>> setOfLists = new HashSet<List<Vertex>> ();
+		Set<List<Vertex>> setOfLists = new HashSet<List<Vertex>>();
 		List<Vertex> vertices = graph.getVertices();
+
+		// performing a BFS at every vertex in the graph
 		for (Vertex vertex : vertices) {
-						
 			visited = new ArrayList<Vertex>();
 			Queue<Vertex> queue = new ArrayDeque<Vertex>();
 			queue.add(vertex);
 			visited.add(vertex);
 
-			while(!queue.isEmpty()) {
-				
-				Vertex currentVertex = queue.remove();				
-				
+			// starting queue to continue until the last connected vertex is reached
+			while (!queue.isEmpty()) {
+				Vertex currentVertex = queue.remove();
 				List<Vertex> neighbours = graph.getDownstreamNeighbors(currentVertex);
-				for(Vertex toVisit : neighbours) {
-					if(!visited.contains(toVisit)) {
+
+				// checking if the vertex has already been visited before adding to queue
+				for (Vertex toVisit : neighbours) {
+					if (!visited.contains(toVisit)) {
 						queue.add(toVisit);
 						visited.add(toVisit);
 					}
 				}
-				
 			}
 			setOfLists.add(visited);
 		}
@@ -175,112 +184,160 @@ public class Algorithms {
 	}
 
 	/**
-	 * You should write the spec for this method
+	 * Find the center of the graph
+	 * 
+	 * @param graph
+	 *            a graph with at least one vertex
+	 * @return the vertex that is at the center of the graph (vertex with smallest
+	 *         eccentricity). Returns the first vertex in the graph if all vertices are isolated
 	 */
-	 public static Vertex center(Graph graph) {
-		 // TODO: Implement this method
-		 
-		 List<Vertex> vertices = graph.getVertices();
+	public static Vertex center(Graph graph) {
 
-		 int smallestEccentricity = -1;
-		 Vertex center = vertices.get(0);
+		List<Vertex> vertices = graph.getVertices();
 
-		 for(Vertex vertex : vertices) {
-			 int distance = findEccentricity(graph,vertex);
-			 if(distance<smallestEccentricity) {
-				 smallestEccentricity = distance;
-				 center = vertex;
-			 }
-			 if(smallestEccentricity == -1 ) {
-				 smallestEccentricity = distance;
-				 center = vertex;
-			 }
-		 }
-		 return center;
-	 }
-	 
-	 public static int findEccentricity (Graph graph, Vertex vertex) {
-		 List<Vertex> vertices = graph.getVertices();
-		 //creating marker table to indicate visited vertices
-		 HashMap<Vertex,Integer> indexValues = new HashMap<Vertex,Integer> ();
-		 Boolean[] checker = new Boolean[vertices.size()];
-		 int index = 0;
-		 Arrays.fill(checker, false);
-		 for (Vertex vert : vertices) {
-			indexValues.put(vert, index);
-			index++;
-		 }
-		 
-		 int distance = 0;
-		 //finding farthest vertex
-		 
-		 //starting BFS from initial vertex
-		 checker[indexValues.get(vertex)] = true;
-		 List<Vertex> neighbours = graph.getDownstreamNeighbors(vertex); 
-		 while(!neighbours.isEmpty()) {
-			 List<Vertex> nextNeighbours = new ArrayList<Vertex>();
-			 for(Vertex points: neighbours) {
-				 List<Vertex> tempNeighbours = graph.getDownstreamNeighbors(points);
-				 for(Vertex point: tempNeighbours) {
-					 int checkerIndex = indexValues.get(point);
-					 if(!checker[checkerIndex]) {
-						 nextNeighbours.add(point);
-						 checker[checkerIndex] = true;
-						 
-					 }
+		int smallestEccentricity = -1;
+		Vertex center = vertices.get(0);
 
-				 }
-			 }
-			 neighbours=nextNeighbours;
-			 distance ++;
-		 }
-		 return distance;
-	 }
+		// calculating the eccentricity for every vertex in graph
+		for (Vertex vertex : vertices) {
+			int distance = findEccentricity(graph, vertex);
 
-	 /**
-	  * You should write the spec for this method
-		*/
-		public static int graphDiameter(Graph graph) {
-			// TODO: Implement this method
-			
-			graphDiameter = 0;
-			List<Vertex> vertices = graph.getVertices();
-			for(Vertex vertex : vertices) {
-				int length = findEccentricity(graph,vertex);
-				if (length>graphDiameter) {
-					graphDiameter = length;
+			// if the eccentricity of the vertex is smaller that the previous ones
+			// cache the new vertex and new smallest eccentricity
+			// values of 0 are ignored for eccentricity as it means that they are isolated
+			// vertices
+			if (distance != 0) {
+				if (distance < smallestEccentricity) {
+					smallestEccentricity = distance;
+					center = vertex;
+				}
+
+				//
+				if (smallestEccentricity == -1) {
+					smallestEccentricity = distance;
+					center = vertex;
 				}
 			}
-			return graphDiameter;
+		}
+		return center;
+	}
+
+	/**
+	 * finds the eccentricity of a vertex in its graph
+	 * 
+	 * @param graph
+	 *            a graph with at least one vertex
+	 * @param vertex
+	 *            a vertex in the graph
+	 * @return the distance between vertex and the farthest connected vertex
+	 */
+	private static int findEccentricity(Graph graph, Vertex vertex) {
+		List<Vertex> vertices = graph.getVertices();
+		// creating marker table to indicate visited vertices
+		HashMap<Vertex, Integer> indexValues = new HashMap<Vertex, Integer>();
+		Boolean[] checker = new Boolean[vertices.size()];
+		int index = 0;
+		Arrays.fill(checker, false);
+		for (Vertex vert : vertices) {
+			indexValues.put(vert, index);
+			index++;
 		}
 
-	 /**
- 	 * You should write the spec for this method
- 	 */
- 	 public static List<Vertex> commonDownstreamVertices(Graph graph, Vertex a, Vertex b) {
- 		 List<Vertex> commonVertices = new ArrayList<Vertex>();
-		 List<Vertex> aNeighbours = graph.getDownstreamNeighbors(a);
-		 List<Vertex> bNeighbours = graph.getDownstreamNeighbors(b);
-		 
-		 for(Vertex vertex : aNeighbours) {
-			 if(bNeighbours.contains(vertex)) {
-				 commonVertices.add(vertex);
-			 }
-		 }
-		 return commonVertices;
- 	 }
- 	 
- 	 public static List<Vertex> commonUpstreamVertices(Graph graph, Vertex a, Vertex b) {
- 		 List<Vertex> commonVertices = new ArrayList<Vertex>();
-		 List<Vertex> aNeighbours = graph.getUpstreamNeighbors(a);
-		 List<Vertex> bNeighbours = graph.getUpstreamNeighbors(b);
-		 
-		 for(Vertex vertex : aNeighbours) {
-			 if(bNeighbours.contains(vertex)) {
-				 commonVertices.add(vertex);
-			 }
-		 }
-		 return commonVertices;
- 	 }
+		//initial distance if no other vertices are visited
+		int distance = 0;
+
+		// starting BFS from initial vertex
+		checker[indexValues.get(vertex)] = true;
+		List<Vertex> neighbours = graph.getDownstreamNeighbors(vertex);
+		while (!neighbours.isEmpty()) {
+			List<Vertex> nextNeighbours = new ArrayList<Vertex>();
+			for (Vertex points : neighbours) {
+				List<Vertex> tempNeighbours = graph.getDownstreamNeighbors(points);
+				for (Vertex point : tempNeighbours) {
+					int checkerIndex = indexValues.get(point);
+					if (!checker[checkerIndex]) {
+						nextNeighbours.add(point);
+						checker[checkerIndex] = true;
+
+					}
+
+				}
+			}
+			neighbours = nextNeighbours;
+			distance++;
+		}
+		return distance;
+	}
+
+	/**
+	 * find the largest distance between two vertices in the graph
+	 * 
+	 * @param graph
+	 *            a graph with at least one vertex
+	 * @return the diameter of the graph (farthest distance between two points)
+	 *         diameter is zero if none of the vertices are connect to another
+	 *         vertex
+	 */
+	public static int graphDiameter(Graph graph) {
+
+		graphDiameter = 0;
+		List<Vertex> vertices = graph.getVertices();
+		for (Vertex vertex : vertices) {
+			int length = findEccentricity(graph, vertex);
+			if (length > graphDiameter) {
+				graphDiameter = length;
+			}
+		}
+		return graphDiameter;
+	}
+
+	/**
+	 * find common downstream neighbours of two vertices
+	 * 
+	 * @param graph
+	 *            a graph that contains at least two vertices
+	 * @param a
+	 *            a vertex in the graph
+	 * @param b
+	 *            a vertex in the graph
+	 * @return a list of vertices where each vertex is downstream of both vertex a
+	 *         and b, returns an empty list if there are none
+	 */
+	public static List<Vertex> commonDownstreamVertices(Graph graph, Vertex a, Vertex b) {
+		List<Vertex> commonVertices = new ArrayList<Vertex>();
+		List<Vertex> aNeighbours = graph.getDownstreamNeighbors(a);
+		List<Vertex> bNeighbours = graph.getDownstreamNeighbors(b);
+
+		for (Vertex vertex : aNeighbours) {
+			if (bNeighbours.contains(vertex)) {
+				commonVertices.add(vertex);
+			}
+		}
+		return commonVertices;
+	}
+
+	/**
+	 * find common upstream neighbours of two vertices
+	 * @param graph
+	 *            graph that contains at least 2 vertices
+	 * @param a
+	 *            a vertex in the graph
+	 * @param b
+	 *            a vertex in the graph
+	 * @return a list of vertices where each vertex is upstream of both vertex a and
+	 *         b, returns an empty list if there are none
+	 */
+	public static List<Vertex> commonUpstreamVertices(Graph graph, Vertex a, Vertex b) {
+		List<Vertex> commonVertices = new ArrayList<Vertex>();
+		List<Vertex> aNeighbours = graph.getUpstreamNeighbors(a);
+		List<Vertex> bNeighbours = graph.getUpstreamNeighbors(b);
+
+		for (Vertex vertex : aNeighbours) {
+			if (bNeighbours.contains(vertex)) {
+				commonVertices.add(vertex);
+			}
+		}
+		return commonVertices;
+	}
 
 }

@@ -9,8 +9,6 @@ import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 public class AdjacencyMatrixGraph implements Graph {
-	// TODO: Implement this class
-
 	private ArrayList<BitSet> matrix = new ArrayList<BitSet>();
 	private HashMap<Vertex, Integer> vertValues = new HashMap<Vertex, Integer>();
 	private ArrayList<Vertex> vertices = new ArrayList<Vertex>();
