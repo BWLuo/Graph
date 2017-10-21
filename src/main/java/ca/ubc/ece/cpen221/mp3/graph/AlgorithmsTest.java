@@ -6,7 +6,6 @@ import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 import org.junit.Test;
-import java.util.Set;
 import java.util.List; 
 
 import java.io.IOException;
