@@ -187,11 +187,11 @@ public class ParsersTest {
 	@Test (expected = IOException.class)
 	public void test5() throws IOException {
 		String filename = "datasets/marvelStyled.txt";
-		Graph test = Parsers.parseMarvelDataset(filename,3);
+		Parsers.parseMarvelDataset(filename,3);
 	}
 	@Test (expected = IOException.class)
 	public void test6() throws IOException {
 		String filename = "datasets/marvelStyled.txt";
-		Graph test = Parsers.parseEnronDataset(filename,3);
+		Parsers.parseEnronDataset(filename,3);
 	}
 }

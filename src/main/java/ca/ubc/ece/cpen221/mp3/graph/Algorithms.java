@@ -41,20 +41,26 @@ public class Algorithms {
 		// creating marker table to indicate visited vertices
 		HashMap<Vertex, Integer> indexValues = new HashMap<Vertex, Integer>();
 		Boolean[] checker = new Boolean[vertices.size()];
-		int index = 0;
 		Arrays.fill(checker, false);
+		int index = 0;
 		for (Vertex vert : vertices) {
 			indexValues.put(vert, index);
 			index++;
 		}
 
 		// setting initial condition if cannot reach vertex b from a
-		int distance = 0;
+		int distance = 1;
 
 		// starting BFS from first vertex
 		checker[indexValues.get(a)] = true;
 		List<Vertex> neighbours = graph.getDownstreamNeighbors(a);
-		while (!neighbours.contains(b) && !neighbours.isEmpty()) {
+		//setting all the checkers to checked
+		for(Vertex v:neighbours) {
+			checker[indexValues.get(v)] = true;
+		}
+		
+	
+		while (!neighbours.isEmpty() && !neighbours.contains(b)) {
 			List<Vertex> nextNeighbours = new ArrayList<Vertex>();
 			for (Vertex points : neighbours) {
 				List<Vertex> tempNeighbours = graph.getDownstreamNeighbors(points);
@@ -71,8 +77,10 @@ public class Algorithms {
 			neighbours = nextNeighbours;
 			distance++;
 		}
-		if (distance == 0) {
-			return distance;
+		
+		//if b cannot be reached from a
+		if(neighbours.isEmpty()) {
+			return -1;
 		}
 		return distance;
 	}
@@ -212,7 +220,6 @@ public class Algorithms {
 					center = vertex;
 				}
 
-				//
 				if (smallestEccentricity == -1) {
 					smallestEccentricity = distance;
 					center = vertex;
@@ -223,7 +230,8 @@ public class Algorithms {
 	}
 
 	/**
-	 * finds the eccentricity of a vertex in its graph
+	 * Helper method for center and diameter.
+	 * Finds the eccentricity of a vertex in its graph
 	 * 
 	 * @param graph
 	 *            a graph with at least one vertex
@@ -231,7 +239,7 @@ public class Algorithms {
 	 *            a vertex in the graph
 	 * @return the distance between vertex and the farthest connected vertex
 	 */
-	private static int findEccentricity(Graph graph, Vertex vertex) {
+	public static int findEccentricity(Graph graph, Vertex vertex) {
 		List<Vertex> vertices = graph.getVertices();
 		// creating marker table to indicate visited vertices
 		HashMap<Vertex, Integer> indexValues = new HashMap<Vertex, Integer>();
@@ -249,6 +257,9 @@ public class Algorithms {
 		// starting BFS from initial vertex
 		checker[indexValues.get(vertex)] = true;
 		List<Vertex> neighbours = graph.getDownstreamNeighbors(vertex);
+		for(Vertex v:neighbours) {
+			checker[indexValues.get(v)] = true;
+		}
 		while (!neighbours.isEmpty()) {
 			List<Vertex> nextNeighbours = new ArrayList<Vertex>();
 			for (Vertex points : neighbours) {
