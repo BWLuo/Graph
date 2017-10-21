@@ -1,4 +1,4 @@
-package test;
+package ca.ubc.ece.cpen221.mp3.tests;
 
 import static org.junit.Assert.*;
 
