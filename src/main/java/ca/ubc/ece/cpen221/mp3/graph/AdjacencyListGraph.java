@@ -7,6 +7,15 @@ import java.util.HashMap;
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
+
+/**
+ * This class represents a graph as an adjacenylist
+ * 
+ * Representation Invariant: the vertices in the graph must not be null
+ * Abstraction Function: creates a unique graph for every unique input two Lists of non-null Vertex
+ * @author Bowen
+ *
+ */
 public class AdjacencyListGraph implements Graph {
 	private HashMap<Vertex, ArrayList<Vertex>> graphRep = new HashMap<Vertex, ArrayList<Vertex>>();
 	private List<Vertex> vertices = new ArrayList<Vertex>();

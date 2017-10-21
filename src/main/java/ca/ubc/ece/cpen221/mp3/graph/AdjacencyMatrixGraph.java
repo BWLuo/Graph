@@ -8,6 +8,13 @@ import java.util.HashMap;
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
+
+/**
+ * Representation Invariant: the vertices in the graph must not be null
+ * Abstraction Function: creates a unique graph for every unique input two Lists of non-null Vertex
+ * @author Bowen
+ *
+ */
 public class AdjacencyMatrixGraph implements Graph {
 	private ArrayList<BitSet> matrix = new ArrayList<BitSet>();
 	private HashMap<Vertex, Integer> vertValues = new HashMap<Vertex, Integer>();
