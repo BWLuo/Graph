@@ -1,7 +1,10 @@
-package ca.ubc.ece.cpen221.mp3.graph;
+package graph;
 
 import static org.junit.Assert.*;
 import java.util.ArrayList;
+
+import ca.ubc.ece.cpen221.mp3.graph.Algorithms;
+import ca.ubc.ece.cpen221.mp3.graph.Parsers;
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
