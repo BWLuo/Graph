@@ -21,6 +21,8 @@ public class AdjacencyMatrixGraph implements Graph {
 	private ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	private int nextMapIndex = 0;
 
+	public AdjacencyMatrixGraph() { }
+
 	public AdjacencyMatrixGraph(List<Vertex> inNodes, List<Vertex> outNodes) {
 		for (int i = 0; i < inNodes.size(); i++) {
 			Vertex inVertex = inNodes.get(i);
